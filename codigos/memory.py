@@ -1,7 +1,7 @@
 from array import array
 
 # memória de 32 bits
-memory = array("L", [0]) * (1024*1024//4)  # 1MB / 262.144 words (218) / 1 word = 4 bytes
+memory = array("L", [0]) * ( (2 ** 18) - 1 )   # 1MB / 262.144 words (218) / 1 word = 4 bytes
 # 0 - 262.143
 
 # funções de acesso (ignorar bits de overflow)
@@ -11,7 +11,7 @@ def read_word(add):
     return memory[add]
 
 def write_word(add, val):
-    add = add & (2**18-1)
+    add = add & ( 2 ** 18 - 1 ) 
     val = val & 0xFFFFFFFF
     memory[add] = val
 

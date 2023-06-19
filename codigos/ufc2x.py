@@ -83,95 +83,96 @@ H = 0
 N = 0
 Z = 1
 
-BUS_A = 0
-BUS_B = 0
-BUS_C = 0
+# Barramentos   
+BAR_A = 0
+BAR_B = 0
+BAR_C = 0
 
 def read_regs(reg_num):
-    global MDR, PC, MBR, X, Y, H, BUS_A, BUS_B
+    global MDR, PC, MBR, X, Y, H, BAR_A, BAR_B 
     
-    BUS_A = H
+    BAR_A = H
     
     if reg_num == 0:
-        BUS_B = MDR
+        BAR_B = MDR
     elif reg_num == 1:
-        BUS_B = PC
+        BAR_B = PC
     elif reg_num == 2:
-        BUS_B = MBR
+        BAR_B = MBR
     elif reg_num == 3:
-        BUS_B = X
+        BAR_B = X
     elif reg_num == 4:
-        BUS_B = Y
+        BAR_B = Y
     else:
-        BUS_B = 0
+        BAR_B = 0
             
 def write_regs(reg_bits):
 
-    global MAR, BUS_C, MDR, PC, X, Y, H
+    global MAR, BAR_C, MDR, PC, X, Y, H
 
     if reg_bits & 0b100000:
-        MAR = BUS_C
+        MAR = BAR_C
         
     if reg_bits & 0b010000:
-        MDR = BUS_C
+        MDR = BAR_C
         
     if reg_bits & 0b001000:
-        PC = BUS_C
+        PC = BAR_C
         
     if reg_bits & 0b000100:
-        X = BUS_C
+        X = BAR_C
         
     if reg_bits & 0b000010:
-        Y = BUS_C
+        Y = BAR_C
         
     if reg_bits & 0b000001:
-        H = BUS_C
+        H = BAR_C
         
             
-def alu(control_bits):
+def alu(bits_de_controle):
 
-    global BUS_A, BUS_B, BUS_C, N, Z
+    global BAR_A, BAR_B, BAR_C, N, Z
     
-    a = BUS_A 
-    b = BUS_B
+    a = BAR_A 
+    b = BAR_B
     o = 0
     
-    shift_bits = control_bits & 0b11000000
+    shift_bits = bits_de_controle & 0b11000000
     shift_bits = shift_bits >> 6
     
-    control_bits = control_bits & 0b00111111
+    bits_de_controle = bits_de_controle & 0b00111111
     
-    if control_bits == 0b011000: 
+    if bits_de_controle == 0b011000: 
         o = a
-    elif control_bits == 0b010100:
+    elif bits_de_controle == 0b010100:
         o = b
-    elif control_bits == 0b011010:
+    elif bits_de_controle == 0b011010:
         o = ~a
-    elif control_bits == 0b101100:
+    elif bits_de_controle == 0b101100:
         o = ~b
-    elif control_bits == 0b111100:
+    elif bits_de_controle == 0b111100:
         o = a + b    
-    elif control_bits == 0b111101:
+    elif bits_de_controle == 0b111101:
         o = a + b + 1
-    elif control_bits == 0b111001:
+    elif bits_de_controle == 0b111001:
         o = a + 1
-    elif control_bits == 0b110101:
+    elif bits_de_controle == 0b110101:
         o = b + 1
-    elif control_bits == 0b111111:
+    elif bits_de_controle == 0b111111:
         o = b - a
-    elif control_bits == 0b110110:
+    elif bits_de_controle == 0b110110:
         o = b - 1
-    elif control_bits == 0b111011:
+    elif bits_de_controle == 0b111011:
         o = -a
-    elif control_bits == 0b001100:
+    elif bits_de_controle == 0b001100:
         o = a & b
-    elif control_bits == 0b011100:
+    elif bits_de_controle == 0b011100:
         o = a | b
-    elif control_bits == 0b010000:
+    elif bits_de_controle == 0b010000:
         o = 0
-    elif control_bits == 0b110001:
+    elif bits_de_controle == 0b110001:
         o = 1
-    elif control_bits == 0b110010:
+    elif bits_de_controle == 0b110010:
         o = -1 
         
     if o == 0:
@@ -188,7 +189,7 @@ def alu(control_bits):
     elif shift_bits == 0b11:
         o = o << 8
         
-    BUS_C = o
+    BAR_C = o
  
 
 def next_instruction(next, jam):
