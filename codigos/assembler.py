@@ -14,6 +14,7 @@ instruction_set = {'add' : 0x02,
                    'jz'  : 0x0F, 
                    'halt': 0xFF}
 
+#* Ver se a string é uma instrução
 def is_instruction(str):
    global instructions
    inst = False
@@ -31,7 +32,8 @@ def is_name(str):
          name = True
          break
    return name
-   
+
+#* codificação para 2 operandos
 def encode_2ops(inst, ops):
    line_bin = []
    if len(ops) > 1:
@@ -41,6 +43,7 @@ def encode_2ops(inst, ops):
             line_bin.append(ops[1])
    return line_bin
 
+#* 
 def encode_goto(ops):
    line_bin = []
    if len(ops) > 0:
@@ -87,8 +90,7 @@ def encode_instruction(inst, ops):
       return encode_ww(ops)
    else:
       return []
-   
-   
+    
 def line_to_bin_step1(line):
    line_bin = []
    if is_instruction(line[0]):
@@ -142,6 +144,8 @@ def resolve_names():
             else:
                line[i] = get_name_byte(line[i])
 
+
+#! MAIN
 for line in fsrc:
    tokens = line.replace('\n','').replace(',','').lower().split(" ")
    i = 0

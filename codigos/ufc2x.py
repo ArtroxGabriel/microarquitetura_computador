@@ -3,69 +3,69 @@ from array import array
 
 firmware = array('L', [0]) * 512
 
-# main: PC <- PC + 1; MBR <- read_byte(PC); goto MBR
+#! main: PC <- PC + 1; MBR <- read_byte(PC); goto MBR
 firmware[0] =   0b000000000_100_00110101_001000_001_001
 
-# HALT
+#! HALT - Instrução de parada
 firmware[255] = 0b000000000_000_00000000_000000_000_000
 
-# X = X + memory[address]
+#! X = X + memory[address]
 
-## 2: PC <- PC + 1; fetch; goto 3
+##? 2: PC <- PC + 1; fetch; goto 3
 firmware[2] = 0b000000011_000_00110101_001000_001_001
 
-## 3: MAR <- MBR; read_word(MAR); goto 4
+##? 3: MAR <- MBR; read_word(MAR); goto 4
 firmware[3] = 0b000000100_000_00010100_100000_010_010
 
-## 4: H <- MDR; goto 5
+##? 4: H <- MDR; goto 5
 firmware[4] = 0b000000101_000_00010100_000001_000_000
 
-## 5: X <- H + X; goto 0
+##? 5: X <- H + X; goto 0
 firmware[5] = 0b000000000_000_00111100_000100_000_011
 
 
-# X = X - memory[address]
+#! X = X - memory[address]
 
-## 6: PC <- PC + 1; fetch; goto 7
+##? 6: PC <- PC + 1; fetch; goto 7
 firmware[6] = 0b000000111_000_00110101_001000_001_001
 
-## 7: MAR <- MBR; read; goto 8
+##? 7: MAR <- MBR; read; goto 8
 firmware[7] = 0b000001000_000_00010100_100000_010_010
 
-## 8: H <- MDR; goto 9
+##? 8: H <- MDR; goto 9
 firmware[8] = 0b000001001_000_00010100_000001_000_000
 
-## 9: X <- X - H; goto 0
+##? 9: X <- X - H; goto 0
 firmware[9] = 0b000000000_000_00111111_000100_000_011
 
-# memory[address] = X
+#! memory[address] = X
 
-## 10: PC <- PC + 1; fetch; goto 11
+##? 10: PC <- PC + 1; fetch; goto 11
 firmware[10] = 0b00001011_000_00110101_001000_001_001
 
-## 11: MAR <- MBR; goto 12
+##? 11: MAR <- MBR; goto 12
 firmware[11] = 0b00001100_000_00010100_100000_000_010
 
-## 12: MDR <- X; write; goto 0
+##? 12: MDR <- X; write; goto 0
 firmware[12] = 0b00000000_000_00010100_010000_100_011
 
-# goto address 
+#! goto address 
 
-## 13: PC <- PC + 1; fetch; goto 14
+##? 13: PC <- PC + 1; fetch; goto 14
 firmware[13] = 0b00001110_000_00110101_001000_001_001
 
-## 14: PC <- MBR; fetch; goto MBR
+##? 14: PC <- MBR; fetch; goto MBR
 firmware[14] = 0b00000000_100_00010100_001000_001_010
 
-# if X == 0 goto address
+#! if X == 0 goto address
 
-## 15: X <- X; if alu = 0 goto 272 else goto 16
+##? 15: X <- X; if alu = 0 goto 272 else goto 16
 firmware[15] = 0b00010000_001_00010100_000100_000_011
 
-## 16: PC <- PC + 1; goto 0
+##? 16: PC <- PC + 1; goto 0
 firmware[16] = 0b00000000_000_00110101_001000_000_001
 
-## 272: goto 13
+##? 272: goto 13
 firmware[272]= 0b00001101_000_00000000_000000_000_000
 
 
@@ -142,6 +142,7 @@ def alu(bits_de_controle):
     
     bits_de_controle = bits_de_controle & 0b00111111
     
+    #* Seguindo a tabela do livro, bits_de_controle determina a operacao da ULA.
     if bits_de_controle == 0b011000: 
         o = a
     elif bits_de_controle == 0b010100:
