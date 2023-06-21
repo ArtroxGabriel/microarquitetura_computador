@@ -1,45 +1,47 @@
 from array import array
 
 # memória de 32 bits
-memory = array("L", [0]) * ( (2 ** 18) - 1 )   # 1MB / 262.144 words (218) / 1 word = 4 bytes
-# 0 - 262.143
+memory = array("L", [0]) * ( (2 ** 18) - 1 )   # 1MB / 262.144 words / 1 word = 32 bits or 4 bytes
 
-# funções de acesso (ignorar bits de overflow)
+# acesso a memoria(leitura ou escrita), ignorar overflow
 
-def read_word(add):
-    add = add & 0b111111111111111111
-    return memory[add]
+def read_word(endereco):
+    # mascarando o endereco para 18 bits
+    endereco = endereco & 0b111111111111111111
+    return memory[endereco]
 
-def write_word(add, val):
-    add = add & ( 2 ** 18 - 1 ) 
-    val = val & 0xFFFFFFFF
-    memory[add] = val
+def write_word(endereco, valor):
+    # mascarando o endereco para 18 bits
+    endereco = endereco & 0b111111111111111111 
+    # mascarando o valor para 32 bits
+    valor = valor & 0xFFFFFFFF
+    memory[endereco] = valor
 
-def read_byte(add):
-    # determinar qual a palavra
-    add = add & 0b1111111111111111111 # 2^20-1
-    end_word = add >> 2   # divisão por 4
+def read_byte(endereco):
+    #ler um determinado byte de uma palavra, em suma, divisao + o resto, vc descobre qual o by
+    # determinar qual a palavra, por divisao.
+    endereco = endereco & 0b11111111111111111111 # mascarando... em 20 bits
+    end_word = endereco >> 2   # divisão por 4
     val_word = memory[end_word]
 
-    # determinar o byte dentro da palavra
-    end_byte = add & 0b11   # resto da divisão por 4
+    # determinar o byte dentro da palavra, pelo resto.
+    end_byte = endereco & 0b11   # resto da divisão por 4
     val_byte = val_word >> (end_byte << 3)
     val_byte = val_byte & 0xFF
     return val_byte
 
 def write_byte(add,val):
     val = val & 0xFF                   # e.g. val = DD
-    add = add & 0b1111111111111111111  # 2^20-1
+    add = add & 0b11111111111111111111  # mascarando... em 20 bits
     end_word = add >> 2   # divisão por 4
-    val_word = memory[end_word]        # 34CC4F33
+    val_word = memory[end_word]        
 
     end_byte = add & 0b11   # resto da divisão por 4
     
-    mask = ~(0xFF << (end_byte << 3))  # FF00FFFF
+    mask = ~(0xFF << (end_byte << 3))  
     val_word = val_word & mask         # 34004F33
-
-    val = val << (end_byte << 3)       # val = 00DD0000
+    val = val << (end_byte << 3)       
  
-    val_word = val_word | val          # val_word = 34DD4F33
+    val_word = val_word | val          
 
     memory[end_word] = val_word
