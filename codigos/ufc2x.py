@@ -22,7 +22,8 @@ BAR_B = 0
 BAR_A = 0
 
 # Armazenamento de controle:
-firmware = array('L', [0] ) * 512
+firmware = array("L", [0]) * 512
+
 
 # funcoes pros registradores
 def read_regs(reg_num):
@@ -43,6 +44,7 @@ def read_regs(reg_num):
     else:
         BAR_B = 0
 
+
 def write_regs(reg_bits):
     global MAR, MDR, PC, X, Y, H, BAR_C
 
@@ -59,16 +61,17 @@ def write_regs(reg_bits):
     if reg_bits & 0b000001:
         H = BAR_C
 
+
 # ULA
 def ula(bits_de_controle):
     global N, Z, BAR_A, BAR_B, BAR_C
-    
+
     A = BAR_A
     B = BAR_C
     saida = 0
-    
+
     deslocador = (bits_de_controle & 0b11000000) >> 6
-    
+
     funcoes = bits_de_controle & 0b00111111
 
     if funcoes == 0b011000:
@@ -78,7 +81,7 @@ def ula(bits_de_controle):
     elif funcoes == 0b011010:
         saida = ~A
     elif funcoes == 0b101100:
-        saida = ~B 
+        saida = ~B
     elif funcoes == 0b111100:
         saida = A + B
     elif funcoes == 0b111101:
@@ -95,22 +98,22 @@ def ula(bits_de_controle):
         saida = -A
     elif funcoes == 0b001100:
         saida = A & B
-    elif funcoes == 0B011100:
+    elif funcoes == 0b011100:
         saida = A | B
     elif funcoes == 0b010000:
         saida = 0
     elif funcoes == 0b110001:
         saida = 1
     elif funcoes == 0b110010:
-        saida = -1 
-    
+        saida = -1
+
     if saida == 0:
         N = 0
         Z = 1
     else:
         N = 1
         Z = 0
-    
+
     if deslocador == 0b01:
         saida = saida << 1
     elif deslocador == 0b10:
@@ -120,7 +123,8 @@ def ula(bits_de_controle):
 
     BAR_C = saida
 
-# MPC
+
+# Next e JAM
 def next_instruction(next, jam):
     global MPC, MBR, N, Z
 
@@ -135,19 +139,21 @@ def next_instruction(next, jam):
         prox = prox | MBR
     MPC = prox
 
+
 # input e output da memoria
 def memoryIO(bits):
     global PC, MBR, MDR, MAR
 
     if bits & 0b001:
-        #fetch
+        # fetch
         MBR = memory.read_byte(PC)
     if bits & 0b010:
-        #read
+        # read
         MDR = memory.read_word(MAR)
     if bits & 0b100:
-        #write
+        # write
         memory.write_word(MAR, MDR)
+
 
 def step():
     global MIR, MPC
@@ -156,4 +162,12 @@ def step():
 
     if MIR == 0:
         return False
-    
+
+    read_regs((MIR & 0b00000000000000000000000000000111))
+    ula((MIR & 0b00000000000011111111000000000000) >> 12)
+    write_regs((MIR & 0b00000000000000000000111111000000) >> 6)
+    memoryIO((MIR & 0b00000000000000000000000000111000) >> 3)
+    next_instruction(
+        (MIR & 0b11111111100000000000000000000000) >> 23,
+        (MIR & 0b00000000011100000000000000000000) >> 20,
+    )
