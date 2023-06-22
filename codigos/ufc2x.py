@@ -60,6 +60,7 @@ firmware[10] = 0b000000000_100_00010100_001000_001_010
 ###
 ###
 
+
 # leitura do registrador
 def read_regs(reg_num):
     global MDR, PC, MBR, X, Y, H, BAR_A, BAR_B
