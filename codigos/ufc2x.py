@@ -27,23 +27,18 @@ firmware = array("L", [0]) * 512
 firmware[0] = 0b000000001_000_00000000_000000_010_000
 ### H = MDR  GOTO 2
 firmware[1] = 0b000000010_000_00010100_000001_000_000
-### MAR = 1 GOTO 3
-firmware[2] = 0b000000011_000_00110001_100000_000_000
+### MAR = X = 1 GOTO 3
+firmware[2] = 0b000000011_000_00110001_100100_000_000
 ### MDR = memory[MAR] GOTO 4
 firmware[3] = 0b000000100_000_00000000_000000_010_000
 ### MDR = H + MDR GOTO 5
 firmware[4] = 0b000000101_000_00111100_010000_000_000
-### X = 1 GOTO 6
-firmware[5] = 0b000000110_000_00110001_000100_000_000
-### X = X + 1 GOTO 7
-firmware[6] = 0b000000111_000_00110101_000100_000_011
-### X = X + 1 GOTO 8
-firmware[7] = 0b000001000_000_00110101_000100_000_011
-### MAR = X  GOTO 9
-firmware[8] = 0b000001001_000_00010100_100000_000_011
-### memory[MAR] = MDR GOTO10
-firmware[9] = 0b000001010_000_00000000_000000_100_000
-
+### X = X + 1 GOTO 5
+firmware[5] = 0b000000110_000_00110101_000100_000_011
+### MAR = X + 1 GOTO 6
+firmware[6] = 0b000000111_000_00110101_100000_000_011
+### memory[MAR] = MDR  GOTO 8
+firmware[7] = 0b000001000_000_00000000_000000_100_000
 
 # leitura do registrador
 def read_regs(reg_num):
@@ -63,7 +58,6 @@ def read_regs(reg_num):
         BAR_B = Y
     else:
         BAR_B = 0
-
 
 # escrita do registrador
 def write_regs(reg_bits):
@@ -87,7 +81,6 @@ def write_regs(reg_bits):
     if reg_bits & 0b000001:
         H = BAR_C
 
-
 # ULA
 def ula(bits_de_controle):
     global BAR_A, BAR_B, BAR_C, N, Z
@@ -96,7 +89,7 @@ def ula(bits_de_controle):
     B = BAR_B
     saida = 0
 
-    deslocador = bits_de_controle & 0b11000000
+    deslocador = ( bits_de_controle & 0b11000000)
     deslocador = deslocador >> 6
 
     bits_de_controle = bits_de_controle & 0b00111111
@@ -150,7 +143,6 @@ def ula(bits_de_controle):
 
     BAR_C = saida
 
-
 # Prox e Jam
 def next_instruction(prox, jam):
     global MPC, MBR, N, Z
@@ -169,7 +161,6 @@ def next_instruction(prox, jam):
         prox = prox | MBR
 
     MPC = prox
-
 
 # input e output da memoria
 def memory_io(mem_bits):
