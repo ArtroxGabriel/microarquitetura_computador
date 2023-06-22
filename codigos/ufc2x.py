@@ -1,4 +1,4 @@
-import memory 
+import memory
 from array import array
 
 # REGISTRADORES
@@ -24,6 +24,7 @@ BAR_A = 0
 # Armazenamento de controle:
 firmware = array('L', [0] ) * 512
 
+# funcoes pros registradores
 def read_regs(reg_num):
     global MDR, PC, MBR, X, Y, H, BAR_A, BAR_B
 
@@ -58,6 +59,7 @@ def write_regs(reg_bits):
     if reg_bits & 0b000001:
         H = BAR_C
 
+# ULA
 def ula(bits_de_controle):
     global N, Z, BAR_A, BAR_B, BAR_C
     
@@ -67,35 +69,91 @@ def ula(bits_de_controle):
     
     deslocador = (bits_de_controle & 0b11000000) >> 6
     
-    controle = bits_de_controle & 0b00111111
+    funcoes = bits_de_controle & 0b00111111
 
-    if controle == 0b011000:
+    if funcoes == 0b011000:
         saida = A
-    elif controle == 0b010100:
+    elif funcoes == 0b010100:
         saida = B
-    elif controle == 0b011010:
+    elif funcoes == 0b011010:
         saida = ~A
-    elif controle == 0b101100:
+    elif funcoes == 0b101100:
         saida = ~B 
-    elif controle == 0b111100:
+    elif funcoes == 0b111100:
         saida = A + B
-    elif controle == 0b111101:
+    elif funcoes == 0b111101:
         saida = A + B + 1
-    elif controle == 0b111001:
+    elif funcoes == 0b111001:
         saida = A + 1
-    elif controle == 0b110101:
+    elif funcoes == 0b110101:
         saida = B + 1
-    elif controle == 0b111111:
+    elif funcoes == 0b111111:
         saida = B - A
-    elif controle == 0b110110:
+    elif funcoes == 0b110110:
         saida = B - 1
-    elif controle == 0b111011:
+    elif funcoes == 0b111011:
         saida = -A
-    elif controle == 0b001100:
+    elif funcoes == 0b001100:
         saida = A & B
-    elif controle == 0B011100:
+    elif funcoes == 0B011100:
         saida = A | B
-    elif controle == 0b110001:
+    elif funcoes == 0b010000:
+        saida = 0
+    elif funcoes == 0b110001:
         saida = 1
-    elif controle == 0b110010:
+    elif funcoes == 0b110010:
         saida = -1 
+    
+    if saida == 0:
+        N = 0
+        Z = 1
+    else:
+        N = 1
+        Z = 0
+    
+    if deslocador == 0b01:
+        saida = saida << 1
+    elif deslocador == 0b10:
+        saida = saida >> 1
+    elif deslocador == 0b11:
+        saida = saida << 8
+
+    BAR_C = saida
+
+# MPC
+def next_instruction(next, jam):
+    global MPC, MBR, N, Z
+
+    if jam == 0b000:
+        MPC = prox
+        return
+    if jam & 0b001:
+        prox = prox | (Z << 8)
+    if jam & 0b010:
+        prox = prox | (N << 8)
+    if jam & 0b100:
+        prox = prox | MBR
+    MPC = prox
+
+# input e output da memoria
+def memoryIO(bits):
+    global PC, MBR, MDR, MAR
+
+    if bits & 0b001:
+        #fetch
+        MBR = memory.read_byte(PC)
+    if bits & 0b010:
+        #read
+        MDR = memory.read_word(MAR)
+    if bits & 0b100:
+        #write
+        memory.write_word(MAR, MDR)
+
+def step():
+    global MIR, MPC
+
+    MIR = firmware[MPC]
+
+    if MIR == 0:
+        return False
+    
