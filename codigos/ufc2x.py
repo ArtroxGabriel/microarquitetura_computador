@@ -61,8 +61,41 @@ def write_regs(reg_bits):
 def ula(bits_de_controle):
     global N, Z, BAR_A, BAR_B, BAR_C
     
-    a = BAR_A
+    A = BAR_A
     B = BAR_C
     saida = 0
     
+    deslocador = (bits_de_controle & 0b11000000) >> 6
     
+    controle = bits_de_controle & 0b00111111
+
+    if controle == 0b011000:
+        saida = A
+    elif controle == 0b010100:
+        saida = B
+    elif controle == 0b011010:
+        saida = ~A
+    elif controle == 0b101100:
+        saida = ~B 
+    elif controle == 0b111100:
+        saida = A + B
+    elif controle == 0b111101:
+        saida = A + B + 1
+    elif controle == 0b111001:
+        saida = A + 1
+    elif controle == 0b110101:
+        saida = B + 1
+    elif controle == 0b111111:
+        saida = B - A
+    elif controle == 0b110110:
+        saida = B - 1
+    elif controle == 0b111011:
+        saida = -A
+    elif controle == 0b001100:
+        saida = A & B
+    elif controle == 0B011100:
+        saida = A | B
+    elif controle == 0b110001:
+        saida = 1
+    elif controle == 0b110010:
+        saida = -1 
