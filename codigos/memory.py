@@ -1,7 +1,7 @@
 from array import array
 
 # memória de 32 bits
-memory = array("L", [0]) * (1024*1024//4)  # 1MB / 262.144 words (218) / 1 word = 32 bits or 4 bytes
+memory = array("L", [0]) * (2 ** 18) # 1MB / 262.144 words (218) / 1 word = 32 bits or 4 bytes
 
 # acesso a memoria(leitura ou escrita), ignorar overflow
 
