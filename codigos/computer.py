@@ -1,7 +1,7 @@
 import ufc2x as cpu
 import memory as mem
 import clock as clk
-# boa noite
+
 mem.write_word(0, 6836)
 mem.write_word(1, 2432)
 
