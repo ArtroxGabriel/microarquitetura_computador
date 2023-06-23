@@ -24,19 +24,33 @@ BAR_C = 0
 # Armazenamento de controle
 firmware = array("L", [0]) * 512
 
-firmware[0] = 0b000000001_000_00000000_000000_010_000
-### H = MDR  GOTO 2
-firmware[1] = 0b000000010_000_00010100_000001_000_000
-### MAR = X = 1 GOTO 3
-firmware[2] = 0b000000011_000_00110001_100100_000_000
-### MDR = memory[MAR] GOTO 4
-firmware[3] = 0b000000100_000_00110101_000100_010_011
-### MDR = H + MDR GOTO 5
-firmware[4] = 0b000000101_000_00111100_010000_000_000
-### MAR = X + 1 GOTO 6
-firmware[5] = 0b000000110_000_00110101_100000_000_011
-### memory[MAR] = MDR  GOTO 8
-firmware[6] = 0b000000111_000_00000000_000000_100_000
+# microprogramas do armazenamento
+
+## MAIN: PC <- PC + 1; FETCH; GOTO MBR
+firmware[0] = 0b000000000_100_00110101_001000_001_001
+
+## X = X + MEMORY[ADDRESS]:
+### PC <- PC + 1; FETCH; GOTO 3 
+firmware[2] = 0b000000011_000_00110101_001000_001_001
+### MAR <- MBR; read_word; GOTO 4 
+firmware[3] = 0b000000100_000_00010100_100000_010_010
+### H <- MDR; GOTO 5
+firmware[4] = 0b000000101_000_00010100_000001_000_000
+### X <- H + X, GOTO 0
+firmware[5] = 0b000000000_000_00111100_000100_000_011
+
+## X = X - MEMORY[ADDRESS]
+
+## MEMORY[ADDRESS] = X
+### PC < PC + 1; FETCH; GOTO 7
+firmware[6] = 0b000000111_000_00110101_001000_001_001
+### MAR <- MBR; GOTO 8
+firmware[7] = 0b000001000_000_00010100_100000_000_010
+### MDR <- X; WRITE; GOTO MAIN
+firmware[8] = 0b000000000_000_00010100_010000_100_011
+## GOTO ADDRESS
+## IF X = 0: GOTO ADDRESS
+
 
 # leitura do registrador
 def read_regs(reg_num):
@@ -44,18 +58,19 @@ def read_regs(reg_num):
 
     BAR_A = H
 
-    if reg_num == 0:
+    if reg_num == 0b000:
         BAR_B = MDR
-    elif reg_num == 1:
+    elif reg_num == 0b001:
         BAR_B = PC
-    elif reg_num == 2:
+    elif reg_num == 0b010:
         BAR_B = MBR
-    elif reg_num == 3:
+    elif reg_num == 0b011:
         BAR_B = X
-    elif reg_num == 4:
+    elif reg_num == 0b100:
         BAR_B = Y
     else:
         BAR_B = 0
+
 
 # escrita do registrador
 def write_regs(reg_bits):
@@ -79,6 +94,7 @@ def write_regs(reg_bits):
     if reg_bits & 0b000001:
         H = BAR_C
 
+
 # ULA
 def ula(bits_de_controle):
     global BAR_A, BAR_B, BAR_C, N, Z
@@ -87,7 +103,7 @@ def ula(bits_de_controle):
     B = BAR_B
     saida = 0
 
-    deslocador = ( bits_de_controle & 0b11000000)
+    deslocador = bits_de_controle & 0b11000000
     deslocador = deslocador >> 6
 
     bits_de_controle = bits_de_controle & 0b00111111
@@ -141,6 +157,7 @@ def ula(bits_de_controle):
 
     BAR_C = saida
 
+
 # Prox e Jam
 def next_instruction(prox, jam):
     global MPC, MBR, N, Z
@@ -159,6 +176,7 @@ def next_instruction(prox, jam):
         prox = prox | MBR
 
     MPC = prox
+
 
 # input e output da memoria
 def memory_io(mem_bits):
