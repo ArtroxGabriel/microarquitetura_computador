@@ -53,11 +53,12 @@ firmware[8] = 0b000000000_000_00010100_010000_100_011
 ### PC <- PC + 1; FETCH; GOTO 10
 firmware[9] = 0b000001010_000_00110101_001000_001_001
 ### PC <- MBR; FETCH; GOTO MBR
-firmware[10] = 0b000001001_100_00010100_001000_001_010
+firmware[10] = 0b000000000_100_00010100_001000_001_010
 
 
 ## IF X = 0: GOTO ADDRESS:
-
+###
+###
 
 # leitura do registrador
 def read_regs(reg_num):
