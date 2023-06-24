@@ -17,6 +17,7 @@ mem.write_byte(4, 3)
 mem.write_byte(5, 25)
 mem.write_byte(6, 1)
 
+mem.write_byte(7, 255)
 clk.start([cpu])
 
 print(mem.read_word(1))

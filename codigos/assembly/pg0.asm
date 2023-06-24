@@ -1,12 +1,26 @@
-main add x, a
-     jz x, nova
-     add x, b
-nova add x, c
-     mov x, d
-     halt
+     goto main
+     wb 0
 
-a ww 21
-b ww 3
-c ww 10
-d ww 0
+r ww 0
+a ww 3
+b ww 20
+u ww 1
 
+main  add x, a
+      jz x, final
+      sub x, u
+      mov x, a
+      sub x, a
+
+      add x, b
+      jz x, final2
+      sub x, u
+      mov x, b
+      sub x, b
+
+      goto main
+final halt
+
+final2 add x, u
+       mov x, r
+       halt
