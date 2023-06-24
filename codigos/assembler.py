@@ -7,12 +7,12 @@ lines_bin = []
 names = []
 
 instructions = ['add', 'sub', 'goto', 'mov', 'jz', 'halt', 'wb', 'ww']
-instruction_set = {'add' : 0x02, 
-                   'sub' : 0x0D  , 
-                   'mov' : 0x06, 
-                   'goto': 0x09,
-                   'jz'  : 0x0B, 
-                   'halt': 0xFF}
+instruction_set = {'add' : 0b00000010, # firmware[2]
+                   'sub' : 0b00001101, # firmware[13]
+                   'mov' : 0b00000110, # firmware[6]
+                   'goto': 0b00001001, # firmware[9]
+                   'jz'  : 0b00001011, # firmware[11]
+                   'halt': 0b11111111} # firmware[255]
 
 #* Ver se a string é uma instrução
 def is_instruction(str):
