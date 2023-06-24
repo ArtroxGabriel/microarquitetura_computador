@@ -1,7 +1,8 @@
 import memory
 from array import array
 
-# REGISTRADORES
+# todo este codigo funcionará como uma CPU
+#! REGISTRADORES
 MPC = 0
 MIR = 0
 
@@ -16,51 +17,101 @@ H = 0
 N = 0
 Z = 1
 
-# BARRAMENTOS
+#! BARRAMENTOS
 BAR_A = 0
 BAR_B = 0
 BAR_C = 0
 
-# Armazenamento de controle
+#! Armazenamento de controle
 firmware = array("L", [0]) * 512
 
-# microprogramas do armazenamento
+#! microprogramas do armazenamento
 
-## MAIN: PC <- PC + 1; FETCH; GOTO MBR
+##? MAIN: PC <- PC + 1; FETCH; GOTO MBR
 firmware[0] = 0b000000000_100_00110101_001000_001_001
 
-## X = X + MEMORY[ADDRESS]:
-### PC <- PC + 1; FETCH; GOTO 3 
+##? HALT: programa de parada
+firmware[255] = 0b000000000_000_00000000_000000_000_000
+
+# todo Manipulando o registrador X:
+##? X = X + MEMORY[ADDRESS]:
+###* PC <- PC + 1; FETCH; GOTO 3
 firmware[2] = 0b000000011_000_00110101_001000_001_001
-### MAR <- MBR; read_word; GOTO 4 
+###* MAR <- MBR; read_word; GOTO 4
 firmware[3] = 0b000000100_000_00010100_100000_010_010
-### H <- MDR; GOTO 5
+###* H <- MDR; GOTO 5
 firmware[4] = 0b000000101_000_00010100_000001_000_000
-### X <- H + X, GOTO 0
+###* X <- H + X, GOTO 0
 firmware[5] = 0b000000000_000_00111100_000100_000_011
 
-## X = X - MEMORY[ADDRESS]:
+##? X = X - MEMORY[ADDRESS]:
+##* PC  <- PC + 1; FETCH; GOTO 14
+firmware[13] = 0b000001110_000_00110101_001000_001_001
+##* MAR <- MBR; READ; GOTO 15
+firmware[14] = 0b000001111_000_00010100_100000_010_010
+##* H <- MDR; GOTO 16
+firmware[15] = 0b000010000_000_00010100_000001_000_000
+##* X <- X - H; GOTO 0
+firmware[16] = 0b000000000_000_00111111_000100_000_011
 
-## MEMORY[ADDRESS] = X:
-### PC < PC + 1; FETCH; GOTO 7
+##? MEMORY[ADDRESS] = X:
+###* PC < PC + 1; FETCH; GOTO 7
 firmware[6] = 0b000000111_000_00110101_001000_001_001
-### MAR <- MBR; GOTO 8
+###* MAR <- MBR; GOTO 8
 firmware[7] = 0b000001000_000_00010100_100000_000_010
-### MDR <- X; WRITE; GOTO MAIN
+###* MDR <- X; WRITE; GOTO MAIN
 firmware[8] = 0b000000000_000_00010100_010000_100_011
 
-## GOTO ADDRESS:
-### PC <- PC + 1; FETCH; GOTO 10
+##? IF X = 0: GOTO ADDRESS:
+###* X <- X; IF ALU = 0; GOTO 268 ELSE 12
+firmware[11] = 0b000001100_001_00010100_000100_000_011
+###* PC <- PC + 1; GOTO 0
+firmware[12] = 0b000000000_000_00110101_001000_000_001
+###* GOTO 9
+firmware[268] = 0b000001001_000_00000000_000000_000_000
+
+# todo Manipulando o registrador Y:
+##? Y = Y + MEMORY[ADDRESS]:
+###* PC <- PC + 1; FETCH; GOTO 18
+firmware[17] = 0b000010010_000_00110101_001000_001_001
+###* MAR <- MBR; read_word; GOTO 19
+firmware[18] = 0b000010011_000_00010100_100000_010_010
+###* H <- MDR; GOTO 20
+firmware[19] = 0b000010100_000_00010100_000001_000_000
+###* Y <- H + Y, GOTO 0
+firmware[20] = 0b000000000_000_00111100_000010_000_100
+
+##? Y = Y - MEMORY[ADDRESS]:
+##* PC  <- PC + 1; FETCH; GOTO 22
+firmware[21] = 0b000010110_000_00110101_001000_001_001
+##* MAR <- MBR; READ; GOTO 23
+firmware[22] = 0b000010111_000_00010100_100000_010_010
+##* H <- MDR; GOTO 24
+firmware[23] = 0b000011000_000_00010100_000001_000_000
+##* Y <- Y - H; GOTO 0
+firmware[24] = 0b000000000_000_00111111_000010_000_100
+
+##? MEMORY[ADDRESS] = Y:
+###* PC < PC + 1; FETCH; GOTO 26
+firmware[25] = 0b000011010_000_00110101_001000_001_001
+###* MAR <- MBR; GOTO 27
+firmware[26] = 0b000011011_000_00010100_100000_000_010
+###* MDR <- Y; WRITE; GOTO MAIN
+firmware[27] = 0b000000000_000_00010100_010000_100_100
+
+##? IF Y = 0: GOTO ADDRESS:
+###* Y <- Y; IF ALU = 0; GOTO 268 ELSE 12
+firmware[28] = 0b000001100_001_00010100_000010_000_100
+
+
+##? GOTO ADDRESS:
+###* PC <- PC + 1; FETCH; GOTO 10
 firmware[9] = 0b000001010_000_00110101_001000_001_001
-### PC <- MBR; FETCH; GOTO MBR
+###* PC <- MBR; FETCH; GOTO MBR
 firmware[10] = 0b000000000_100_00010100_001000_001_010
 
 
-## IF X = 0: GOTO ADDRESS:
-###
-###
-
-# leitura do registrador
+#! leitura do registrador
 def read_regs(reg_num):
     global MDR, PC, MBR, X, Y, H, BAR_A, BAR_B
 
@@ -80,7 +131,7 @@ def read_regs(reg_num):
         BAR_B = 0
 
 
-# escrita do registrador
+#! escrita do registrador
 def write_regs(reg_bits):
     global MAR, MDR, PC, X, Y, H, BAR_C
 
@@ -103,7 +154,7 @@ def write_regs(reg_bits):
         H = BAR_C
 
 
-# ULA
+#! ULA
 def ula(bits_de_controle):
     global BAR_A, BAR_B, BAR_C, N, Z
 
@@ -166,7 +217,7 @@ def ula(bits_de_controle):
     BAR_C = saida
 
 
-# Prox e Jam
+#! Prox e Jam
 def next_instruction(prox, jam):
     global MPC, MBR, N, Z
 
@@ -186,7 +237,7 @@ def next_instruction(prox, jam):
     MPC = prox
 
 
-# input e output da memoria
+#! input e output da memoria
 def memory_io(mem_bits):
     global PC, MBR, MDR, MAR
 
@@ -200,6 +251,7 @@ def memory_io(mem_bits):
         memory.write_word(MAR, MDR)
 
 
+#! passos da cpu
 def step():
     global MIR, MPC
 
