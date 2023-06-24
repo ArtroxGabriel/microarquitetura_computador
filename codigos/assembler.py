@@ -1,5 +1,5 @@
 import sys
-#! testando
+
 fsrc = open(str(sys.argv[1]), 'r')
 
 lines = []
@@ -8,10 +8,10 @@ names = []
 
 instructions = ['add', 'sub', 'goto', 'mov', 'jz', 'halt', 'wb', 'ww']
 instruction_set = {'add' : 0x02, 
-                   'sub' : 0x06, 
-                   'mov' : 0x0A, 
-                   'goto': 0x0D,
-                   'jz'  : 0x0F, 
+                   'sub' : 0x0D  , 
+                   'mov' : 0x06, 
+                   'goto': 0x09,
+                   'jz'  : 0x0B, 
                    'halt': 0xFF}
 
 #* Ver se a string é uma instrução
@@ -33,7 +33,7 @@ def is_name(str):
          break
    return name
 
-#* codificação para 2 operandos
+#? codificação para 2 operandos
 def encode_2ops(inst, ops):
    line_bin = []
    if len(ops) > 1:
@@ -145,7 +145,7 @@ def resolve_names():
                line[i] = get_name_byte(line[i])
 
 
-#! MAIN
+#? MAIN
 for line in fsrc:
    tokens = line.replace('\n','').replace(',','').lower().split(" ")
    i = 0
