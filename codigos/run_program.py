@@ -6,7 +6,7 @@ import disk
 
 disk.read(str(sys.argv[1]))
 
-
+local = int(input())
 clk.start([cpu])
 
-print("Depois: ", mem.read_word(6))
+print("Depois: ", mem.read_word(local))
