@@ -9,4 +9,4 @@ disk.read(str(sys.argv[1]))
 
 clk.start([cpu])
 
-print("Depois: ", mem.read_word(4))
+print("Depois: ", mem.read_word(6))
