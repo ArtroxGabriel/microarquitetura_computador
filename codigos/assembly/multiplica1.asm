@@ -1,24 +1,23 @@
     goto main
     wb 0
- 
-r ww 0 
-b ww 7
-c ww 35
+result ww 0 
+a ww 5
+b ww 3
 u ww 1
 
-main add x, c      # if c=0 goto final
-     jz x, final   
-     sub x, c
+main add x, b             # if b=0 goto final
+     jz x, final
+     sub x, b
      
-     add x, b      # r = r + b
-     add x, r
-     mov x, r
-     sub x, r
+     add x, a             # r = r + a
+     add x, result
+     mov x, result
+     sub x, result
      
-     add x, c      # c = c - 1
+     add x, b             # b = b - 1
      sub x, u     
-     mov x, c
-     sub x, c
+     mov x, b
+     sub x, b
      
      goto main
 final halt

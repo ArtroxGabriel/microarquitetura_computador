@@ -33,7 +33,7 @@ firmware[0] = 0b000000000_100_00110101_001000_001_001
 ##? HALT: programa de parada
 firmware[255] = 0b000000000_000_00000000_000000_000_000
 
-# todo Manipulando o registrador X:
+#todo Manipulando o registrador X(inicio)
 ##? X = X + MEMORY[ADDRESS]:
 ###* PC <- PC + 1; FETCH; GOTO 3
 firmware[2] = 0b000000011_000_00110101_001000_001_001
@@ -70,7 +70,8 @@ firmware[12] = 0b000000000_000_00110101_001000_000_001
 ###* GOTO 9
 firmware[268] = 0b000001001_000_00000000_000000_000_000
 
-# todo Manipulando o registrador Y:
+
+#todo Manipulando o registrador Y:
 ##? Y = Y + MEMORY[ADDRESS]:
 ###* PC <- PC + 1; FETCH; GOTO 18
 firmware[17] = 0b000010010_000_00110101_001000_001_001
@@ -103,13 +104,11 @@ firmware[27] = 0b000000000_000_00010100_010000_100_100
 ###* Y <- Y; IF ALU = 0; GOTO 268 ELSE 12
 firmware[28] = 0b000001100_001_00010100_000010_000_100
 
-
 ##? GOTO ADDRESS:
 ###* PC <- PC + 1; FETCH; GOTO 10
 firmware[9] = 0b000001010_000_00110101_001000_001_001
 ###* PC <- MBR; FETCH; GOTO MBR
 firmware[10] = 0b000000000_100_00010100_001000_001_010
-
 
 #! leitura do registrador
 def read_regs(reg_num):
@@ -183,7 +182,7 @@ def ula(bits_de_controle):
         saida = A + 1
     elif bits_de_controle == 0b110101:
         saida = B + 1
-    elif bits_de_controle == 0b111111:
+    elif bits_de_controle == 0b101010:
         saida = B - A
     elif bits_de_controle == 0b110110:
         saida = B - 1
@@ -270,3 +269,5 @@ def step():
     )
 
     return True
+
+

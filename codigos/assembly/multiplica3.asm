@@ -2,7 +2,7 @@
  wb 0
  
 r ww 0 
-a ww 35
+a ww 2
 b ww 2
 c ww 0
 d ww 0
