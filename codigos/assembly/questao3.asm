@@ -4,7 +4,7 @@
 r ww 1
 a ww 2
 b ww 2
-c ww 10 
+c ww 2 
 
 
 main add x, a # a != c; a <- c; return 1
