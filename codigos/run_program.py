@@ -6,7 +6,10 @@ import disk
 
 disk.read(str(sys.argv[1]))
 
-local = int(input())
+
+
 clk.start([cpu])
 
-print("Depois: ", mem.read_word(local))
+print("======================")
+print("Resultado:", mem.read_word(1))
+print("======================")
