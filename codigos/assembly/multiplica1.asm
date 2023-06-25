@@ -1,8 +1,8 @@
     goto main
     wb 0
 result ww 0 
-a ww 5
-b ww 3
+a ww 0
+b ww 5
 u ww 1
 
 main add x, b             # if b=0 goto final
