@@ -1,4 +1,4 @@
-# Avaliação Prática - Arquitetura de Computadores
+# Avaliação Prática - Arquitetura de Computadores :shitpit:
 Universidade Federal do Ceará
 
  
@@ -28,6 +28,7 @@ O assembler deve montar programas escritos no assembly que foram projetados na l
 Foi disponibilizados quatro problemas para os quais deve-se escrever programas que computem suas soluções, executando tais programas em seu emulador. Você deverá, portanto, escrever esses programas com sua linguagem assembly, usar o seu assembler para gerar o código binário e, finalmente, colocar para rodar no emulador
 #### Problemas disponibilizados:
 ---
+![problemas](<imgs/Captura de tela de 2023-06-25 11-19-44.png>)
 ## Dupla:
 ---
 | Estudante | Github |
