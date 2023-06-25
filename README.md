@@ -1,5 +1,5 @@
-# Avaliação Prática - Arquitetura de Computadores :shitpit:
-Universidade Federal do Ceará
+# Avaliação Prática - Arquitetura de Computadores 
+Universidade Federal do Ceará 
 
  
 ## descrição geral: 
