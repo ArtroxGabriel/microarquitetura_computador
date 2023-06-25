@@ -2,7 +2,7 @@
     wb 0       
 
 r ww 1        # retorno da funcao fatorial
-n ww 0       # argumentos da funcao fatorial
+n ww 0        # argumentos da funcao fatorial
 a ww 1        # argumento da funcao multiplicacao
 b ww 1        # argumento da funcao multiplicacao
 z ww 0        # retorno da multiplicacao
@@ -10,7 +10,7 @@ d ww 1        # +1 ou -1
 
 main add x, n   
      jz x, finalmain # Se N igual a 0, finaliza o programa e retorna r = 1       
-     sub x, d
+     sub x, d        
      jz x, finalmain # verificao se é 1
      add x, d
 

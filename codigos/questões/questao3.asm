@@ -1,10 +1,10 @@
-    goto main
+    goto main # questa 3 - Operacao CSW
     wb 0
 
-r ww 1
-a ww 2
-b ww 2
-c ww 10 
+r ww 1    # retorno da funcao csw
+a ww 2    # argumento da funcao csw
+b ww 2    # operando da funcao csw
+c ww 10   # argumento da funcao csw
 
 
 main add x, a # a != c; a <- c; return 1
