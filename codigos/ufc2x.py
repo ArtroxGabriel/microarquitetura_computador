@@ -33,7 +33,7 @@ firmware[0] = 0b000000000_100_00110101_001000_001_001
 ##? HALT: programa de parada
 firmware[255] = 0b000000000_000_00000000_000000_000_000
 
-# todo Manipulando o registrador X:
+#todo Manipulando o registrador X(inicio)
 ##? X = X + MEMORY[ADDRESS]:
 ###* PC <- PC + 1; FETCH; GOTO 3
 firmware[2] = 0b000000011_000_00110101_001000_001_001
@@ -52,7 +52,7 @@ firmware[14] = 0b000001111_000_00010100_100000_010_010
 ##* H <- MDR; GOTO 16
 firmware[15] = 0b000010000_000_00010100_000001_000_000
 ##* X <- X - H; GOTO 0
-firmware[16] = 0b000000000_000_00111111_000100_000_011
+firmware[16] = 0b000000000_000_00101010_000100_000_011
 
 ##? MEMORY[ADDRESS] = X:
 ###* PC < PC + 1; FETCH; GOTO 7
@@ -70,7 +70,8 @@ firmware[12] = 0b000000000_000_00110101_001000_000_001
 ###* GOTO 9
 firmware[268] = 0b000001001_000_00000000_000000_000_000
 
-# todo Manipulando o registrador Y:
+
+#todo Manipulando o registrador Y:
 ##? Y = Y + MEMORY[ADDRESS]:
 ###* PC <- PC + 1; FETCH; GOTO 18
 firmware[17] = 0b000010010_000_00110101_001000_001_001
@@ -89,7 +90,7 @@ firmware[22] = 0b000010111_000_00010100_100000_010_010
 ##* H <- MDR; GOTO 24
 firmware[23] = 0b000011000_000_00010100_000001_000_000
 ##* Y <- Y - H; GOTO 0
-firmware[24] = 0b000000000_000_00111111_000010_000_100
+firmware[24] = 0b000000000_000_00101010_000010_000_100
 
 ##? MEMORY[ADDRESS] = Y:
 ###* PC < PC + 1; FETCH; GOTO 26
@@ -103,13 +104,11 @@ firmware[27] = 0b000000000_000_00010100_010000_100_100
 ###* Y <- Y; IF ALU = 0; GOTO 268 ELSE 12
 firmware[28] = 0b000001100_001_00010100_000010_000_100
 
-
 ##? GOTO ADDRESS:
 ###* PC <- PC + 1; FETCH; GOTO 10
 firmware[9] = 0b000001010_000_00110101_001000_001_001
 ###* PC <- MBR; FETCH; GOTO MBR
 firmware[10] = 0b000000000_100_00010100_001000_001_010
-
 
 #! leitura do registrador
 def read_regs(reg_num):
@@ -183,7 +182,7 @@ def ula(bits_de_controle):
         saida = A + 1
     elif bits_de_controle == 0b110101:
         saida = B + 1
-    elif bits_de_controle == 0b111111:
+    elif bits_de_controle == 0b101010:
         saida = B - A
     elif bits_de_controle == 0b110110:
         saida = B - 1
@@ -270,3 +269,5 @@ def step():
     )
 
     return True
+
+
