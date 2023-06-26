@@ -1,4 +1,4 @@
-import ufc2x as cpu
+import cpu
 import sys
 import memory as mem
 import clock as clk
@@ -12,6 +12,6 @@ clk.start([cpu])
 
 print("------------------------------------")
 
-print("Resultado:", mem.read_word(1))
+print(f"Resultado: {mem.read_word(1)}")
 
 print("====================================")

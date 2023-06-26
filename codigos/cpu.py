@@ -33,7 +33,7 @@ firmware[0] = 0b000000000_100_00110101_001000_001_001
 ##? HALT: programa de parada
 firmware[255] = 0b000000000_000_00000000_000000_000_000
 
-#todo Manipulando o registrador X(inicio)
+# todo Manipulando o registrador X(inicio)
 ##? X = X + MEMORY[ADDRESS]:
 ###* PC <- PC + 1; FETCH; GOTO 3
 firmware[2] = 0b000000011_000_00110101_001000_001_001
@@ -70,8 +70,11 @@ firmware[12] = 0b000000000_000_00110101_001000_000_001
 ###* GOTO 9
 firmware[268] = 0b000001001_000_00000000_000000_000_000
 
+##? X <- 0; GOTO 0
+firmware[29] = 0b000000000_000_00010000_000100_000_000
 
-#todo Manipulando o registrador Y:
+
+# todo Manipulando o registrador Y:
 ##? Y = Y + MEMORY[ADDRESS]:
 ###* PC <- PC + 1; FETCH; GOTO 18
 firmware[17] = 0b000010010_000_00110101_001000_001_001
@@ -109,6 +112,10 @@ firmware[28] = 0b000001100_001_00010100_000010_000_100
 firmware[9] = 0b000001010_000_00110101_001000_001_001
 ###* PC <- MBR; FETCH; GOTO MBR
 firmware[10] = 0b000000000_100_00010100_001000_001_010
+
+##? Y <- 0; GOTO 0
+firmware[30] = 0b000000000_000_00010000_000010_000_000
+
 
 #! leitura do registrador
 def read_regs(reg_num):
@@ -269,5 +276,3 @@ def step():
     )
 
     return True
-
-

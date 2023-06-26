@@ -32,5 +32,5 @@ Foi disponibilizados quatro problemas para os quais deve-se escrever programas q
 ---
 | Estudante | Github |
 | --- | --- |
-| Gabriel Carmo | [ArtroxGabriel](https://github.com/ArtroxGabriel)
+| Antonio Carmo | [ArtroxGabriel](https://github.com/ArtroxGabriel)
 | Tobias Nóbrega | [Tobnobre](https://github.com/Tobnobre)
