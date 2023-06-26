@@ -1,4 +1,4 @@
-import ufc2x as cpu
+import cpu
 import sys
 import memory as mem
 import clock as clk
