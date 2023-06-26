@@ -6,7 +6,7 @@ lines = []
 lines_bin = []
 names = []
 
-instructions = ["add", "sub", "goto", "mov", "jz", "halt", "wb", "ww"]
+instructions = ["add", "sub", "goto", "mov", "jz", "halt", "wb", "ww", "zerar"]
 instruction_set = {
     "add": {"x": 0b00000010, "y": 0b00010001},  # firmware[2] e firmware[17]
     "sub": {"x": 0b00001101, "y": 0b00010101},  # firmware[13] e firmware[21]
@@ -14,10 +14,11 @@ instruction_set = {
     "goto": 0b00001001,  # firmware[9]
     "jz": {"x": 0b00001011, "y": 0b00011100},  # firmware[11] e firmware[28]
     "halt": 0b11111111,  # firmware[255]
+    "zerar": {"x": 0b00011101, "y": 0b00011110},  # firmware[29] e firmware[30]
 }
 
 
-#? Ver se a string é uma instrução
+# ? Ver se a string é uma instrução
 def is_instruction(str):
     global instructions
     inst = False
@@ -48,7 +49,17 @@ def encode_2ops(inst, ops):
                 line_bin.append(ops[1])
     return line_bin
 
-#? codificao do goto
+
+# ? codificao para o zerar
+def encode_zerar(ops):
+    line_bin = []
+    if len(ops) > 0:
+        if ops[0] == "x" or ops[0] == "y":
+            line_bin.append(instruction_set["zerar"][ops[0]])
+    return line_bin
+
+
+# ? codificao do goto
 def encode_goto(ops):
     line_bin = []
     if len(ops) > 0:
@@ -57,13 +68,15 @@ def encode_goto(ops):
             line_bin.append(ops[0])
     return line_bin
 
-#? codificacao para o halt(final)
+
+# ? codificacao para o halt(final)
 def encode_halt():
     line_bin = []
     line_bin.append(instruction_set["halt"])
     return line_bin
 
-#? codificao para o write_byte
+
+# ? codificao para o write_byte
 def encode_wb(ops):
     line_bin = []
     if len(ops) > 0:
@@ -72,7 +85,8 @@ def encode_wb(ops):
                 line_bin.append(int(ops[0]))
     return line_bin
 
-#? codificação para o write_word
+
+# ? codificação para o write_word
 def encode_ww(ops):
     line_bin = []
     if len(ops) > 0:
@@ -85,7 +99,8 @@ def encode_ww(ops):
                 line_bin.append((val & 0xFF000000) >> 24)
     return line_bin
 
-#? codificacao para as instruções
+
+# ? codificacao para as instruções
 def encode_instruction(inst, ops):
     if inst == "add" or inst == "sub" or inst == "mov" or inst == "jz":
         return encode_2ops(inst, ops)
@@ -93,6 +108,8 @@ def encode_instruction(inst, ops):
         return encode_goto(ops)
     elif inst == "halt":
         return encode_halt()
+    elif inst == "zerar":
+        return encode_zerar(ops)
     elif inst == "wb":
         return encode_wb(ops)
     elif inst == "ww":
@@ -155,13 +172,14 @@ def resolve_names():
         for i in range(0, len(line)):
             if is_name(line[i]):
                 if (
-                    line[i - 1] == instruction_set["add"]['x']
-                    or line[i - 1] == instruction_set["sub"]['x']
-                    or line[i - 1] == instruction_set["mov"]['x']
-                    or line[i - 1] == instruction_set["add"]['y']
-                    or line[i - 1] == instruction_set["sub"]['y']
-                    or line[i - 1] == instruction_set["mov"]['y']
-
+                    line[i - 1] == instruction_set["add"]["x"]
+                    or line[i - 1] == instruction_set["sub"]["x"]
+                    or line[i - 1] == instruction_set["mov"]["x"]
+                    or line[i - 1] == instruction_set["add"]["y"]
+                    or line[i - 1] == instruction_set["sub"]["y"]
+                    or line[i - 1] == instruction_set["mov"]["y"]
+                    or line[i - 1] == instruction_set["zerar"]["x"]
+                    or line[i - 1] == instruction_set["zerar"]["x"]
                 ):
                     line[i] = get_name_byte(line[i]) // 4
                 else:
