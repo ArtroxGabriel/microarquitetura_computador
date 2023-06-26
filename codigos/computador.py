@@ -12,6 +12,6 @@ clk.start([cpu])
 
 print("------------------------------------")
 
-print(f"Resultado: {mem.read_word(1)} e X = {cpu.X}")
+print(f"Resultado: {mem.read_word(1)}")
 
 print("====================================")

@@ -179,7 +179,7 @@ def resolve_names():
                     or line[i - 1] == instruction_set["sub"]["y"]
                     or line[i - 1] == instruction_set["mov"]["y"]
                     or line[i - 1] == instruction_set["zerar"]["x"]
-                    or line[i - 1] == instruction_set["zerar"]["x"]
+                    or line[i - 1] == instruction_set["zerar"]["y"]
                 ):
                     line[i] = get_name_byte(line[i]) // 4
                 else:
