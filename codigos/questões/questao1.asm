@@ -2,8 +2,8 @@
     wb 0
 
 r ww 0        # retorno da funcao potencia
-m ww 10       # argumento da potencia: base
-n ww 3        # argumento da potencia: expoente
+m ww 6       # argumento da potencia: base
+n ww 6        # argumento da potencia: expoente
 a ww 0        # argumento da funcao multiplicacao
 b ww 0        # argumento da funcao multiplicacao
 z ww 0        # retorno da funcao multiplicacao
@@ -20,12 +20,12 @@ main add x, m
      jz y, caso4 # expoente igual a 1
 
      mov y, n    # n <- n -1
-     sub y, n    # y <- 0
+     zerar y    # y <- 0
 
      add x, d    
      mov x, a    # a <- x
      mov x, b    # b <- x
-     sub x, b
+     zerar x
     
      goto mult
 
@@ -45,17 +45,17 @@ potencia add y, n
          sub y, d
          jz y, finalpotencia
          mov y, n
-         sub y, n
+         zerar y
          
          add x, m
          mov x, b # b <- m
-         sub x, m 
+         zerar x 
          
          add x, z 
          mov x, a  # a <- z
          
 
-         sub x, z # z <- 0
+         zerar x # z <- 0
          mov x, z
          
          goto mult
@@ -65,17 +65,17 @@ finalpotencia add y, z
 
 mult add y, b     # multiplicacao z <- a * b       
      jz y, finalmult
-     sub y, b
+     zerar y
      
      add y, a             
      add y, z
      mov y, z
-     sub y, z
+     zerar y
      
      add y, b            
      sub y, d     
      mov y, b
-     sub y, b
+     zerar y
      
      goto mult
 finalmult goto potencia
