@@ -1,5 +1,6 @@
-import cpu
+"""Computador com CPU e memória."""
 import sys
+import cpu
 import memory as mem
 import clock as clk
 import disk

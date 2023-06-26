@@ -1,3 +1,4 @@
+"""Assembler da microestrutura do computador de Von Neumann"""
 import sys
 
 fsrc = open(str(sys.argv[1]), "r")
@@ -18,8 +19,8 @@ instruction_set = {
 }
 
 
-# ? Ver se a string é uma instrução
 def is_instruction(str):
+    """? Verifica se a string é uma instrução válida"""
     global instructions
     inst = False
     for i in instructions:
@@ -30,6 +31,7 @@ def is_instruction(str):
 
 
 def is_name(str):
+    """? Verifica se a string é um nome válido"""
     global names
     name = False
     for n in names:
@@ -39,8 +41,8 @@ def is_name(str):
     return name
 
 
-# ? codificação para 2 operandos
 def encode_2ops(inst, ops):
+    """? Codifica instruções com 2 operandos"""
     line_bin = []
     if len(ops) > 1:
         if ops[0] == "x" or ops[0] == "y":
@@ -50,8 +52,8 @@ def encode_2ops(inst, ops):
     return line_bin
 
 
-# ? codificao para o zerar
 def encode_zerar(ops):
+    """? Codifica instrução zerar"""
     line_bin = []
     if len(ops) > 0:
         if ops[0] == "x" or ops[0] == "y":
@@ -59,8 +61,8 @@ def encode_zerar(ops):
     return line_bin
 
 
-# ? codificao do goto
 def encode_goto(ops):
+    """? Codifica instrução goto"""
     line_bin = []
     if len(ops) > 0:
         if is_name(ops[0]):
@@ -69,15 +71,15 @@ def encode_goto(ops):
     return line_bin
 
 
-# ? codificacao para o halt(final)
 def encode_halt():
+    """? Codifica instrução halt"""
     line_bin = []
     line_bin.append(instruction_set["halt"])
     return line_bin
 
 
-# ? codificao para o write_byte
 def encode_wb(ops):
+    """? Codifica instrução write_byte"""
     line_bin = []
     if len(ops) > 0:
         if ops[0].isnumeric():
@@ -86,8 +88,8 @@ def encode_wb(ops):
     return line_bin
 
 
-# ? codificação para o write_word
 def encode_ww(ops):
+    """? Codifica instrução write_word"""
     line_bin = []
     if len(ops) > 0:
         if ops[0].isnumeric():
@@ -100,8 +102,8 @@ def encode_ww(ops):
     return line_bin
 
 
-# ? codificacao para as instruções
 def encode_instruction(inst, ops):
+    """? Codifica uma instrução"""
     if inst == "add" or inst == "sub" or inst == "mov" or inst == "jz":
         return encode_2ops(inst, ops)
     elif inst == "goto":
@@ -119,6 +121,7 @@ def encode_instruction(inst, ops):
 
 
 def line_to_bin_step1(line):
+    """? Codifica uma linha de código"""
     line_bin = []
     if is_instruction(line[0]):
         line_bin = encode_instruction(line[0], line[1:])
@@ -128,6 +131,7 @@ def line_to_bin_step1(line):
 
 
 def lines_to_bin_step1():
+    """? Codifica todas as linhas de código"""
     global lines
     for line in lines:
         line_bin = line_to_bin_step1(line)
@@ -139,6 +143,7 @@ def lines_to_bin_step1():
 
 
 def find_names():
+    """? Encontra todos os nomes de labels"""
     global lines
     for k in range(0, len(lines)):
         is_label = True
@@ -151,6 +156,7 @@ def find_names():
 
 
 def count_bytes(line_number):
+    """contador de bytes"""
     line = 0
     byte = 1
     while line < line_number:
@@ -160,12 +166,14 @@ def count_bytes(line_number):
 
 
 def get_name_byte(str):
+    """? Retorna o byte de uma label"""
     for name in names:
         if name[0] == str:
             return name[1]
 
 
 def resolve_names():
+    """? Resolve os nomes de labels"""
     for i in range(0, len(names)):
         names[i] = (names[i][0], count_bytes(names[i][1]))
     for line in lines_bin:

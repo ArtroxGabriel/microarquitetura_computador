@@ -1,5 +1,7 @@
-import memory
+"""CPU com microprogramas."""
 from array import array
+import memory
+
 
 # todo este codigo funcionará como uma CPU
 #! REGISTRADORES
@@ -117,8 +119,8 @@ firmware[10] = 0b000000000_100_00010100_001000_001_010
 firmware[30] = 0b000000000_000_00010000_000010_000_000
 
 
-#! leitura do registrador
 def read_regs(reg_num):
+    """! leitura do registrador"""
     global MDR, PC, MBR, X, Y, H, BAR_A, BAR_B
 
     BAR_A = H
@@ -137,8 +139,8 @@ def read_regs(reg_num):
         BAR_B = 0
 
 
-#! escrita do registrador
 def write_regs(reg_bits):
+    """! escrita do registrador"""
     global MAR, MDR, PC, X, Y, H, BAR_C
 
     if reg_bits & 0b100000:
@@ -160,8 +162,8 @@ def write_regs(reg_bits):
         H = BAR_C
 
 
-#! ULA
 def ula(bits_de_controle):
+    """! ULA - unidade logica aritmetica"""
     global BAR_A, BAR_B, BAR_C, N, Z
 
     A = BAR_A
@@ -223,8 +225,8 @@ def ula(bits_de_controle):
     BAR_C = saida
 
 
-#! Prox e Jam
 def next_instruction(prox, jam):
+    """! proxima instrucao e jump"""
     global MPC, MBR, N, Z
 
     if jam == 0b000:
@@ -243,8 +245,8 @@ def next_instruction(prox, jam):
     MPC = prox
 
 
-#! input e output da memoria
 def memory_io(mem_bits):
+    """! input e output da memoria"""
     global PC, MBR, MDR, MAR
 
     if mem_bits & 0b001:  # FETCH
@@ -257,8 +259,8 @@ def memory_io(mem_bits):
         memory.write_word(MAR, MDR)
 
 
-#! passos da cpu
 def step():
+    """! passo da cpu"""
     global MIR, MPC
 
     MIR = firmware[MPC]

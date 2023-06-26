@@ -2,8 +2,8 @@
     wb 0
 
 r ww 0        # retorno da funcao potencia
-m ww 6       # argumento da potencia: base
-n ww 6        # argumento da potencia: expoente
+m ww 4       # argumento da potencia: base
+n ww 8        # argumento da potencia: expoente
 a ww 0        # argumento da funcao multiplicacao
 b ww 0        # argumento da funcao multiplicacao
 z ww 0        # retorno da funcao multiplicacao

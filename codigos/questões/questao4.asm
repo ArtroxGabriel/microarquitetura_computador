@@ -2,9 +2,9 @@
     wb 0       
 
 r ww 1        # retorno da funcao fatorial
-n ww 2       # argumentos da funcao fatorial
-a ww 1        # argumento da funcao multiplicacao
-b ww 1        # argumento da funcao multiplicacao
+n ww 11       # n: argumentos da funcao fatorial
+a ww 1        # a: argumento da funcao multiplicacao
+b ww 1        # b: argumento da funcao multiplicacao
 z ww 0        # retorno da multiplicacao
 d ww 1        # +1 ou -1
 
