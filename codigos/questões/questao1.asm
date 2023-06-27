@@ -7,22 +7,21 @@ n ww 6        # argumento da potencia: expoente
 a ww 0        # argumento da funcao multiplicacao
 b ww 0        # argumento da funcao multiplicacao
 z ww 0        # retorno da funcao multiplicacao
-d ww 1        # +1 or -1
 
 main add x, m
      jz x, caso1 # base igual a 0
-     sub x, d
+     dec x
      jz x, caso2 # base igual a 1
 
      add y, n
      jz y, caso3 # expoente igual a 0
-     sub y, d
+     dec y
      jz y, caso4 # expoente igual a 1
 
      mov y, n    # n <- n -1
      zerar y    # y <- 0
 
-     add x, d    
+     inc x    
      mov x, a    # a <- x
      mov x, b    # b <- x
      zerar x
@@ -34,7 +33,7 @@ caso1 halt
 caso2 add x, m
       mov x, r
       halt
-caso3 add y, d
+caso3 inc y
       mov y, r
       halt
 caso4 add y, m
@@ -42,7 +41,7 @@ caso4 add y, m
       halt
 
 potencia add y, n
-         sub y, d
+         dec y
          jz y, finalpotencia
          mov y, n
          zerar y
@@ -73,7 +72,7 @@ mult add y, b     # multiplicacao z <- a * b
      zerar y
      
      add y, b            
-     sub y, d     
+     dec y     
      mov y, b
      zerar y
      
