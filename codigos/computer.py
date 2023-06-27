@@ -7,9 +7,12 @@ mem.write_word(100, 32)
 mem.write_word(130, 10)
 
 # X <- X + memory[50]
-mem.write_byte(1, 30)
+mem.write_byte(1, 17)
+mem.write_byte(2, 50)
+
+mem.write_byte(3, 34)
 # stop
-mem.write_byte(2, 255)
+mem.write_byte(4, 255)
 
 
 clk.start([cpu])

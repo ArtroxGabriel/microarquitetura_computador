@@ -6,7 +6,19 @@ lines = []
 lines_bin = []
 names = []
 
-instructions = ["add", "sub", "goto", "mov", "jz", "halt", "wb", "ww", "zerar"]
+instructions = [
+    "add",
+    "sub",
+    "goto",
+    "mov",
+    "jz",
+    "halt",
+    "wb",
+    "ww",
+    "zerar",
+    "inc",
+    "dec",
+]
 instruction_set = {
     "add": {"x": 0b00000010, "y": 0b00010001},  # firmware[2] e firmware[17]
     "sub": {"x": 0b00001101, "y": 0b00010101},  # firmware[13] e firmware[21]
@@ -15,6 +27,8 @@ instruction_set = {
     "jz": {"x": 0b00001011, "y": 0b00011100},  # firmware[11] e firmware[28]
     "halt": 0b11111111,  # firmware[255]
     "zerar": {"x": 0b00011101, "y": 0b00011110},  # firmware[29] e firmware[30]
+    "dec": {"x": 0b00011111, "y": 0b00100001},  # firmware[31] e firmware[33]
+    "inc": {"x": 0b00100000, "y": 0b00100010},  # firmware[32] e firmware[34]
 }
 
 
@@ -69,6 +83,24 @@ def encode_goto(ops):
     return line_bin
 
 
+# ? codificao do incremento
+def encode_inc(ops):
+    line_bin = []
+    if len(ops) > 0:
+        if ops[0] == "x" or ops[0] == "y":
+            line_bin.append(instruction_set["inc"][ops[0]])
+    return line_bin
+
+
+# ? codificao do decremento
+def encode_dec(ops):
+    line_bin = []
+    if len(ops) > 0:
+        if ops[0] == "x" or ops[0] == "y":
+            line_bin.append(instruction_set["dec"][ops[0]])
+    return line_bin
+
+
 # ? codificacao para o halt(final)
 def encode_halt():
     line_bin = []
@@ -114,6 +146,10 @@ def encode_instruction(inst, ops):
         return encode_wb(ops)
     elif inst == "ww":
         return encode_ww(ops)
+    elif inst == "inc":
+        return encode_inc(ops)
+    elif inst == "dec":
+        return encode_dec(ops)
     else:
         return []
 
@@ -180,6 +216,10 @@ def resolve_names():
                     or line[i - 1] == instruction_set["mov"]["y"]
                     or line[i - 1] == instruction_set["zerar"]["x"]
                     or line[i - 1] == instruction_set["zerar"]["y"]
+                    or line[i - 1] == instruction_set["inc"]["y"]
+                    or line[i - 1] == instruction_set["inc"]["x"]
+                    or line[i - 1] == instruction_set["dec"]["x"]
+                    or line[i - 1] == instruction_set["dec"]["y"]
                 ):
                     line[i] = get_name_byte(line[i]) // 4
                 else:
