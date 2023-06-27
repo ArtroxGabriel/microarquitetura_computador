@@ -6,8 +6,5 @@ b ww 4
 c ww 6
 d ww 1
 
-main    add y, b # y <- y + B
-        add y, c # y <- y + C
-        inc y
-        mov y, a # A <- y
+main    sum y, a, b # y <- y + B
         halt     # finaliza

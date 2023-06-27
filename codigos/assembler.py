@@ -18,6 +18,8 @@ instructions = [
     "zerar",
     "inc",
     "dec",
+    "sum",
+    "min",
 ]
 instruction_set = {
     "add": {"x": 0b00000010, "y": 0b00010001},  # firmware[2] e firmware[17]
@@ -29,6 +31,8 @@ instruction_set = {
     "zerar": {"x": 0b00011101, "y": 0b00011110},  # firmware[29] e firmware[30]
     "dec": {"x": 0b00011111, "y": 0b00100001},  # firmware[31] e firmware[33]
     "inc": {"x": 0b00100000, "y": 0b00100010},  # firmware[32] e firmware[34]
+    "sum": {"x": 0b00100011, "y": 0b00101111},  # firmware[35] e firmware[47]
+    "min": {"x": 0b00101001, "y": 0b00110101},  # firmware[41] e firmware[53]
 }
 
 
@@ -132,10 +136,24 @@ def encode_ww(ops):
     return line_bin
 
 
+# ? codificao para soma e subtracao:
+def encode_3ops(inst, ops):
+    line_bin = []
+    if len(ops) > 2:
+        if ops[0] == "x" or ops[0] == "y":
+            if is_name(ops[1]):
+                line_bin.append(instruction_set[inst][ops[0]])
+                line_bin.append(ops[1])
+                line_bin.append(ops[2])
+    return line_bin
+
+
 # ? codificacao para as instruções
 def encode_instruction(inst, ops):
     if inst == "add" or inst == "sub" or inst == "mov" or inst == "jz":
         return encode_2ops(inst, ops)
+    elif inst == "sum" or inst == "min":
+        return encode_3ops(inst, ops)
     elif inst == "goto":
         return encode_goto(ops)
     elif inst == "halt":
@@ -211,15 +229,15 @@ def resolve_names():
                     line[i - 1] == instruction_set["add"]["x"]
                     or line[i - 1] == instruction_set["sub"]["x"]
                     or line[i - 1] == instruction_set["mov"]["x"]
+                    or line[i - 1] == instruction_set["zerar"]["x"]
+                    or line[i - 1] == instruction_set["sum"]["x"]
+                    or line[i - 1] == instruction_set["min"]["x"]
                     or line[i - 1] == instruction_set["add"]["y"]
                     or line[i - 1] == instruction_set["sub"]["y"]
                     or line[i - 1] == instruction_set["mov"]["y"]
-                    or line[i - 1] == instruction_set["zerar"]["x"]
                     or line[i - 1] == instruction_set["zerar"]["y"]
-                    or line[i - 1] == instruction_set["inc"]["y"]
-                    or line[i - 1] == instruction_set["inc"]["x"]
-                    or line[i - 1] == instruction_set["dec"]["x"]
-                    or line[i - 1] == instruction_set["dec"]["y"]
+                    or line[i - 1] == instruction_set["sum"]["y"]
+                    or line[i - 1] == instruction_set["min"]["y"]
                 ):
                     line[i] = get_name_byte(line[i]) // 4
                 else:
